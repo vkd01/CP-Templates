@@ -1,0 +1,478 @@
+ /*                                   Life Goes on and you Learn from it !!  -Steve Jobs
+
+ Author : Vimal Kumar Dubey   ᗡ⋊Λ
+ ! Instead of Copying my Template .....Get INSPIRED and Create a unique one //
+ **************************************************************************************************
+ ----------------------------------------------------------------------------------------------------------------
+ Hit A,B,C FASTER and reach CANDIDATE MASTER !!
+ Inspiration : striver_79
+ ---------------------------------------------------------------------------------------------------------------
+ PROFILE IS TEMPORARY, SKILLS ARE PERMANENT !!
+ /*------------------------------------------------------------------------------------------------------*/
+ #undef _GLIBCXX_DEBUG //a compiler flag used to enable debug mode in gcc's C++ Standard Library implementation
+ #ifdef LOCAL
+ #include "algo/debug.h"
+ #else
+ #define debug(...) 42
+ #endif
+ /*|----------------------------------------------------------------------------------------------------|*/
+ #include<bits/stdc++.h>
+ using namespace std;
+ using u64 = uint64_t;
+ // using u128 = __uint128_t;
+ const long long INF = 10e9;
+ const long long MOD = 1e9 + 7;
+ const long long MAXN = 2e5;
+ const long long NN = 1e5 + 10;
+ const long long INFY = 0x3f3f3f3f3f3f;
+ const long long N = 1e5 + 10; 
+ /*-----------------------------------------------------------------------------------------------------*/
+ template<typename A, typename B> 
+ ostream& operator<<(ostream &os, const pair<A, B> &p) { 
+ return os << '(' << p.first << ", " << p.second << ')'; 
+ }
+ template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> 
+ ostream& operator << (ostream &os, const T_container &v) { 
+ os << '{'; string sep; 
+ for (const T &x : v) os << sep << x, sep = ", "; 
+ return os << '}'; 
+ }
+ template<class P, class Q = vector<P>, class R = less<P> > ostream& operator << (ostream& out, priority_queue<P, Q, R> const& M){
+ static priority_queue<P, Q, R> U;
+ U = M;
+ out << "{ ";
+ while(!U.empty())
+ out << U.top() << " ", U.pop();
+ return (out << "}");
+ }
+ template<class P> ostream& operator << (ostream& out, queue<P> const& M){
+ static queue<P> U;
+ U = M;
+ out << "{"; string sep;
+ while(!U.empty()){
+ out << sep << U.front(); sep = ", "; U.pop();
+ }
+ return (out << "}");
+ }
+
+ #define TRACE
+ #ifdef TRACE
+ #define trace(...) __f(#__VA_ARGS__, __VA_ARGS__)
+ template <typename Arg1>
+ void __f(const char* name, Arg1&& arg1){
+ cerr << name << " : " << arg1 << endl;
+ }
+ template <typename Arg1, typename... Args>
+ void __f(const char* names, Arg1&& arg1, Args&&... args){
+ int count_open = 0, len = 1;
+ for(int k = 1; ; ++k){
+ char cur = *(names + k);
+ count_open += (cur == '(' ? 1 : (cur == ')' ? -1: 0));
+ if (cur == ',' && count_open == 0){
+ const char* comma = names + k;
+ cerr.write(names, len) << " : " << arg1 << " | ";
+ __f(comma + 1, args...);
+ return;
+ }
+ len = (cur == ' ' ? len : k + 1);
+ }
+ }
+ #else
+ #define trace(...) 1
+ #endif
+
+ /*/---------------------------RANDOM GENERATORS----------------------/*/
+ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+ inline int64_t random_long(long long l = LLONG_MIN,long long r = LLONG_MAX){
+ uniform_int_distribution<int64_t> generator(l,r);
+ return generator(rng);
+ }
+ struct custom_hash { // Credits: https://codeforces.com/blog/entry/62393
+ static uint64_t splitmix64(uint64_t x) { // http://xorshift.di.unimi.it/splitmix64.c
+ x += 0x9e3779b97f4a7c15;
+ x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+ x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+ return x ^ (x >> 31);
+ }
+ size_t operator()(uint64_t x) const {
+ static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+ return splitmix64(x + FIXED_RANDOM);
+ }
+ template<typename L, typename R>
+ size_t operator()(pair<L,R> const& Y) const{
+ static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+ return splitmix64(Y.first * 31ull + Y.second + FIXED_RANDOM);
+ }
+ };
+
+ /*--------------Wait !!------------------------------------------------------------------------------*/
+
+ template<typename T> using minpq = priority_queue<T, vector<T>, greater<T>>;
+ template<typename T> using maxpq = priority_queue<T>;
+template <const int M>struct Modular {int v;Modular(int a = 0) : v(a) {}Modular(long long a) : v(a % M) {if (v < 0)v += M;}
+Modular operator+(Modular m) { return Modular((v + m.v) % M); }
+Modular operator-(Modular m) { return Modular((v - m.v + M) % M); }
+Modular operator*(Modular m) { return Modular((1LL * v * m.v) % M); }
+Modular inv() { return this->pow(M - 2); }
+Modular operator/(Modular m) { return *this * m.inv(); }
+Modular& operator+=(Modular m) { return *this = *this + m; }
+Modular& operator-=(Modular m) { return *this = *this - m; }
+Modular& operator*=(Modular m) { return *this = *this * m; }
+Modular& operator/=(Modular m) { return *this = *this / m; }
+friend ostream& operator<<(ostream& os, Modular m) { return os << m.v; }
+Modular pow(long long n) {Modular r(1), x = *this;for (; n > 0; n >>= 1) {if (n & 1)r = r * x;x = x * x;}return r;}};
+using Mint = Modular<int(1e9 + 7)>;
+
+
+ /*------------------DEFINES ---------------------------------------------------------------------*/
+ #define testLoop                                                   int t; cin>>t; while(t--)
+ #define ll                                                               long long int
+ #define loop(k,b,a)                                                for(ll k=b;k<a;k++)
+ #define rloop(k,b,a)                                               for(ll k=b-1;k>=a;k--)
+ #define ff                                                               first
+ #define ss                                                             second
+ #define pb                                                             push_back
+ #define beg2end(count)                                        count.begin(),count.end()
+ #define vl                                                              vector<ll>
+ #define pl                                                              pair<ll,ll>
+ #define map(a,b)                                                      map<a,b>
+ #define umap(a,b)                                                    unordered_map<a,b>
+ #define NO_OF_CHARS                                      256
+ #define print(s)                                                      cout<<s<<endl;
+ #define lineprint(s)                                                cout<<s<<" "
+ #define nextline                                                     cout<<"\n";
+ #define BIN(a,b)                                                    (a<<b)
+ #define convert_tolower(s)                                    transform(beg2end(s), s.begin(), ::tolower);
+ #define convert_toupper(s)                                   transform(beg2end(s), s.begin(), ::toupper);
+ #define KOPIKO                                                  ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+ /*----------------------------------------TRIE--------------------------------------------------------*/
+ class Node{
+ Node *links[26];
+ bool flag = false;
+ bool containsKey(char ch) {return (links[ch - 'a']!=NULL);}
+ void put(char ch, Node *node) { links[ch-'a'] = node;}
+ Node *get(char ch){ return links[ch - 'a'];}
+ void setEnd() {flag = true;}
+ bool isEnd() {return flag;}
+
+ class Trie{
+ private:
+ Node *root;
+ public:
+ Trie(){
+ root = new Node();
+ }
+
+ void insert(string word){
+ Node *node = root;
+ for(int i = 0;i<word.size();i++){
+ if(!node->containsKey(word[i])) {
+ node->put(word[i],new Node());
+ }
+ node = node->get(word[i]);
+ }
+ node->setEnd();
+ }
+
+ };
+ };
+
+ /*----------------------------------------DSU---------------------------------------------------------*/
+ class DisjointSet {
+ vector<ll> rank, parent;
+ public:
+ DisjointSet(ll n) {
+ rank.resize(n + 1, 0LL);
+ parent.resize(n + 1);
+ for (ll i = 0; i < n; i++) parent[i] = i;
+ }
+ ll find_ultimate_parent(ll node) {
+ if (node == parent[node]) return node;
+ return parent[node] = find_ultimate_parent(parent[node]);
+ }
+ void Union(ll u, ll v) {
+ u = find_ultimate_parent(u);
+ v = find_ultimate_parent(v);
+ if (u == v) return;
+ parent[v] = u;
+ }
+ void UnionByRank(ll u, ll v) {
+ ll ulp_u = find_ultimate_parent(u);
+ ll ulp_v = find_ultimate_parent(v);
+ if (ulp_u == ulp_v) return;
+ if (rank[ulp_u] < rank[ulp_v]) parent[ulp_v] = ulp_u;
+ else if (rank[ulp_u] > rank[ulp_v]) parent[ulp_v] = ulp_u;
+ else {
+ parent[ulp_v] = ulp_u;
+ rank[ulp_u]++;
+ }}};
+
+ /*----------------------------SEGMENT TREE-------------------------------------------------*/
+ class SegmentTree {
+  vector<ll> segTree;
+
+  void initSegTree(){
+    segTree.resize(4*N);
+  }
+
+public:
+
+ void build(vl &arr, ll node, ll start, ll end){
+   if(start == end){
+     segTree[node] = arr[start];
+     return; 
+   }
+   ll mid = start + (end - start)/2;
+
+   build(arr, 2*node, start,mid);
+   build(arr, 2*node +1 , mid+1, end);
+
+ //Change according to the need
+   segTree[node] = min(segTree[2*node] , segTree[2*node+1]);
+ } 
+ 
+ void update(vl &arr, ll node, ll start, ll end, ll idx, ll val) {
+   if(start == end){
+ // Leaf node
+     arr[idx] = val;
+     segTree[node] = val;
+   }
+   else{
+     ll mid = start + (end - start) / 2;
+     if(start <= idx and idx <= mid){
+ // If idx is in the left child, recurse on the left child
+       update(arr,2*node, start, mid, idx, val);
+     }
+     else {
+ // if idx is in the right child, recurse on the right child
+       update(arr,2*node+1, mid+1, end, idx, val);
+     }
+
+ //Change this part accoring to the problem condition
+     segTree[node] = min(segTree[2*node] ,segTree[2*node+1]);
+   }
+ }
+
+ ll query(ll node, ll start, ll end, ll left, ll right){
+   if(right < start or end < left)  return INFY;
+   if(left <= start and end <= right) return segTree[node];
+
+   ll mid = start + (end - start)/2;
+   ll p1 = query(2*node, start, mid, left, right);
+   ll p2 = query(2*node+1, mid+1, end, left, right);
+   return min(p1 , p2);
+ }
+};
+
+ /*-------------------------------2D Fenwick Tree---------------------------------------------*/
+ 
+ template <typename T, int64_t... Ns>
+struct FenwickTreeRURQ{
+    T t = 0;
+    void increment(T x) { t += x; }
+    T rangeSum() { return t; }
+};
+template <typename T, int64_t N, int64_t... Ns>
+struct FenwickTreeRURQ<T, N, Ns...>{
+    FenwickTreeRURQ<T, Ns...> t[2][N];
+    template <typename... Args>
+    void suffixIncrement(T x, int64_t i, Args... args){
+        int64_t k = i + 1;
+        while (k <= N){
+            t[0][k - 1].increment(x, args...);
+            t[1][k - 1].increment(x * (T)i, args...);
+            k += k & -k;
+        }}
+    template <typename... Args>
+    void increment(T x, int64_t i, int64_t j, Args... args){
+        suffixIncrement(x, i, args...);
+        suffixIncrement(-x, j + 1, args...);
+    }
+    template <typename... Args>
+    T prefixSum(int64_t i, Args... args){
+        T x = 0;
+        int64_t k = i + 1;
+        while (k){
+            x += (T)(i + 1) * t[0][k - 1].rangeSum(args...);
+            x -= t[1][k - 1].rangeSum(args...);
+            k -= k & -k;
+        }
+        return x;
+    }
+    template <typename... Args>
+    T rangeSum(int64_t i, int64_t j, Args... args){
+        return prefixSum(j, args...) - (i ? prefixSum(i - 1, args...) : 0);
+    }};
+    
+      /*-------------------------------1D Fenwick Tree---------------------------------------------*/
+
+    class FenwickTree{
+
+      ll N;
+      vl tree;
+
+      void initFenwick(ll n) {
+        N = n;
+        tree.assign(n+1,0);
+      } 
+
+      void update(ll ind, ll delta){
+        while(ind<=N){
+          tree[ind] += delta;
+          ind+= (ind & -ind);
+        }
+      }
+
+      void updateMax(ll ind, ll delta){
+        while(ind<=N){
+          tree[ind] = max(tree[ind], delta);
+          ind+= (ind & -ind);
+        }
+      }
+      
+      ll fenPrefix(ll ind){
+        ll ans = -3e9;
+        while(ind>0){
+          ans+=tree[ind];
+          ind-= (ind & -ind);
+        }
+        return ans;
+      }
+
+      ll range_sum(ll left, ll right){
+        
+        return fenPrefix(right) - fenPrefix(left-1);
+       
+      }
+
+
+    };
+
+ /*----------------------------------Time Bachao ----------------------------------------------*/
+
+void num_to_string (ll num, string &ss){  if(num){ num_to_string((num-1)/26, ss); ss+='A'+(num-1)%26; } }
+void str_to_num(string s, ll &ans){for(int i=0;i<s.size();i++)ans=ans*26 +s[i]-'A'+1; }
+ bool isPowerofTwo(ll x) {return x && (!(x & (x - 1)));}
+ void printVec(vl &arr) {for (auto&i : arr) cout << i << " ";}
+ ll binpowMod(ll a, ll n, ll _mod) { a = a%_mod; ll res = 1LL;  if (n == 0) return 1LL; while (n > 0) { if (n & 1) res = (res*a)%_mod; n >>= 1;  a = (a*a)%_mod; } return res%_mod;}
+ ll binpow(ll a, ll n) { a = a; ll res = 1LL;  if (n == 0) return 1LL; while (n > 0) { if (n & 1) res = (res*a); n >>= 1;  a = (a*a); } return res;}
+ ll lower_bound(vector<ll> &v, ll element) { ll low = 0, high = v.size() - 1; while (high - low > 1) {ll mid = low + (high - low) / 2; if (v[mid] < element) low = mid + 1; else high = mid;}    if (v[low] >= element) return low; else if (v[high] >= element) return high; return -1; }
+ ll upper_bound(vector<ll> &v, ll element) {ll low = 0, high = v.size() - 1; while (high - low > 1) {ll mid = low + (high - low) / 2; if (v[mid] <= element) low = mid + 1; else high = mid;}    if (v[low] > element) return low; else if (v[high] > element) return high; return -1; }
+ ll  MostSignificantBit(ll n) {if (n == 0)return 0; ll msb = 0; n = n / 2; while (n != 0) {n /= 2; msb++;} return BIN(1, msb);}
+ ll gcd(ll a, ll b) {if (b == 0)return a; else return gcd(b, a % b);}
+ vector<ll> sieve; void SieveOf() {bool prime[NN]; memset(prime, true, sizeof(prime)); for (int p = 2; p * p <= NN; p++) {if (prime[p] == true) {for (int i = p * p; i < NN; i += p) prime[i] = false; } } for (int p = 2; p < NN; p++) if (prime[p]) sieve.pb(p); }
+ ll LCM(ll arr[], ll n) { ll ans = arr[0]; loop(i, 1, n)ans = (((arr[i] * ans)) / (gcd(arr[i], ans))); return ans; }
+ void display(vector<ll>&vec) {for (auto&i : vec) cout << i << " "; nextline}
+ bool areDistict(vl &arr) { ll n = arr.size(); set<ll> set; for (auto&i : arr) set.insert(i); return set.size() == n;}
+ ll Minv(ll i, ll mod) {if (i == 1) return 1; return (mod - ((mod / i) * Minv(mod % i, mod)) % mod) % mod;}
+ void scan(vl &arr, ll n) {loop(i, 0, n) cin >> arr[i];}
+ bool comp1(pair<ll, ll> &a, pair<ll, ll> &b) {if (a.first != b.first) return a.first > b.first; return a.first > b.first;}
+ bool parity(ll n) { return n %2;; }
+ ll mod_mul(ll a, ll b) {a = a % MOD; b = b % MOD; return (((a * b) % MOD) + MOD) % MOD;}
+
+
+ /*------------------------------MATHEMATICS----------------------------------------------------*/
+ //    MATHEMATICS is the most beautiful and most Powerful creation of Human Spirit !
+
+ /*___________________PRIMALITY TEST------------------------------------------------*/
+
+ bool isPrime(ll n) { loop(i, 2, sqrt(n) + 1) { if (n % i == 0) return false; } return true; }
+
+ //                                      Fermat primality test
+ bool probablyPrimeFermat(ll n, ll iter=5) { if (n < 4) return n == 2 || n == 3; loop(i,0,iter) { ll a = 2 + rand() % (n - 3);if (binpowMod(a, n - 1, n) != 1)  return false;}return true;}
+
+ //                                     Miller-Rabin primality test
+ bool check_composite(ll n, ll a, ll d, ll s) {ll x = binpowMod(a, d, n);if (x == 1 or x == n - 1)return false;for (ll r = 1; r < s; r++) {x = (ll)x * x % n;if (x == n - 1) return false;}return true; };
+
+
+ bool MillerRabin(ll n, ll iter=5) { // returns true if n is probably prime, else returns false.
+ if (n < 4) return n == 2 or n == 3;ll s = 0, d = n - 1;while ((d & 1) == 0) { d >>= 1;s++;}
+ for (ll i = 0; i < iter; i++) {int a = 2 + rand() % (n - 3);if (check_composite(n, a, d, s))return false;}return true;}
+
+
+ /*---------------------------------COMBINATORICS--------------------------------------------*/
+ ll fact(ll n) { if(n==0) return 1; ll res = 1; loop(i,2,n+1) res = (res * i)%MOD; return res; }
+ vl F(N);
+
+ ll nCr2(ll n, ll r){
+ if(n<r) return 0;
+ return F[n]*binpow(F[n-r]*F[r],MOD-2)%MOD;
+ }
+
+ ll nCr(ll n, ll r){
+ return fact(n) / (fact(r) * fact(n - r));
+ }
+
+ void precompute_factorials(){
+ F[0] = 1;
+ loop(i,1,N) F[i] = (F[i-1]*i)%MOD;
+ }
+
+ /*-------------------------------------------------------------------------------------------------------*/
+
+ vector<ll> graph[N]; bool visited[N];
+ void dfs(ll vertex) {
+ // lineprint(vertex);
+ visited[vertex] = true;
+ //if (visited[vertex]) return;
+ for (int child : graph[vertex]) {
+ if (visited[child]) continue;
+
+ dfs(child);
+
+ }
+ }
+ /*                  SUFFER NOW AND LIVE REST OF LIFE AS A CHAMP !!
+ Every beginner was once a contender Who dindn't give up        */
+ /*-----------------------------------------! जय Shree राम !------------------------------------------------------*/
+
+ /*CODE BEGINS->---------------------------------------------------------------------------------------------*/
+
+
+
+ void CPwithVKD() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+ }
+
+
+ /*------------------------------------------------------------------------------------------------------*/
+
+ int32_t main() {
+
+ #ifndef ONLINE_JUDGE
+ cerr << "Exectution Time : " << clock() / (double)CLOCKS_PER_SEC << "sec   ";
+ freopen("input.txt", "r", stdin);
+ freopen("output.txt", "w", stdout);
+ #endif
+
+ cout << fixed << setprecision(10);
+ cerr << fixed << setprecision(10);
+ auto start = std::chrono::high_resolution_clock::now();
+
+ KOPIKO
+ testLoop
+ CPwithVKD();
+ auto stop = std::chrono::high_resolution_clock::now(); 
+ auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
+ return 0;
+ }
+
+
+
+
+
+
+ 
