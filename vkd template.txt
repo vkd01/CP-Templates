@@ -180,9 +180,10 @@ using Mint = Modular<int(1e9 + 7)>;
 
  /*----------------------------------------DSU---------------------------------------------------------*/
  class DisjointSet {
+ public:
  vector<ll> rank, parent;
  public:
- DisjointSet(ll n) {
+ void initDSU(ll n) {
  rank.resize(n + 1, 0LL);
  parent.resize(n + 1);
  for (ll i = 0; i < n; i++) parent[i] = i;
@@ -210,6 +211,8 @@ using Mint = Modular<int(1e9 + 7)>;
 
  /*----------------------------SEGMENT TREE-------------------------------------------------*/
  class SegmentTree {
+
+ public:
   vector<ll> segTree;
 
   void initSegTree(){
@@ -409,20 +412,67 @@ void str_to_num(string s, ll &ans){for(int i=0;i<s.size();i++)ans=ans*26 +s[i]-'
  loop(i,1,N) F[i] = (F[i-1]*i)%MOD;
  }
 
- /*-------------------------------------------------------------------------------------------------------*/
+ /*-----------------------------------------------GRAPH------------------------------------------------------*/
+ class Graph {
+public:
+  long long V;
+  vector<vector<long long>> adj;
 
- vector<ll> graph[N]; bool visited[N];
- void dfs(ll vertex) {
- // lineprint(vertex);
- visited[vertex] = true;
- //if (visited[vertex]) return;
- for (int child : graph[vertex]) {
- if (visited[child]) continue;
+  Graph(long long vertices) {
+    V = vertices;
+    adj.resize(V);
+  }
 
- dfs(child);
+  void addEdge(long long u, long long v) {
+    adj[u].push_back(v);
+  }
 
- }
- }
+  void findCycles(vector<long long>& path, vector<long long>& visited, vector<vector<long long>>& cycles) {
+    long long current = path.back();
+    visited[current] = 1;
+
+    for (long long neighbor : adj[current]) {
+      if (visited[neighbor] == 1) {
+                // Cycle detected
+        vector<long long> cycle;
+        long long i = path.size() - 1;
+        while (path[i] != neighbor) {
+          cycle.push_back(path[i]);
+          i--;
+        }
+        cycle.push_back(neighbor);
+        cycles.push_back(cycle);
+      } else if (visited[neighbor] == 0) {
+        path.push_back(neighbor);
+        findCycles(path, visited, cycles);
+        path.pop_back();
+      }
+    }
+
+    visited[current] = 2;
+  }
+
+  vector<long long> findCycleLengths() {
+    vector<long long> visited(V, 0);
+    vector<vector<long long>> cycles;
+    vector<long long> path;
+
+    for (long long i = 0; i < V; i++) {
+      if (visited[i] == 0) {
+        path.push_back(i);
+        findCycles(path, visited, cycles);
+        path.pop_back();
+      }
+    }
+
+    vector<long long> cycleLengths;
+    for (const auto& cycle : cycles) {
+      cycleLengths.push_back(cycle.size());
+    }
+
+    return cycleLengths;
+  }
+};
  /*                  SUFFER NOW AND LIVE REST OF LIFE AS A CHAMP !!
  Every beginner was once a contender Who dindn't give up        */
  /*-----------------------------------------! जय Shree राम !------------------------------------------------------*/
